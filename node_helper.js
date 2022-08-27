@@ -82,8 +82,13 @@ module.exports = NodeHelper.create({
 				return
 			}
 
-			var query = url.parse(req.url, true).query
-			this.sendSocketNotification(actionName, query);
+			var query = url.parse(req.url, true).query;
+			// if the payload only consists of one string, send the string as string and not as object
+			if (Object.keys(query).length == 1 && query[Object.keys(query)[0]] == ''){
+				this.sendSocketNotification(actionName, Object.keys(query)[0]);
+			}else{
+				this.sendSocketNotification(actionName, query);
+			}
 			res.send({'success': 'true'});
 		});
 	},
